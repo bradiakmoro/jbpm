@@ -1,6 +1,9 @@
 package org.jbpm.shared.services.impl;
 
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.TransactionSynchronizationRegistry;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.GenericCommand;
@@ -22,6 +25,27 @@ public class TransactionalCommandService implements CommandService {
 		this.emf = emf;
 		this.txm = new JtaTransactionManager(null, null, null);
 	}
+	
+	/**
+	 * Constructor - spring friendly version.
+	 * 
+	 * @param emf
+	 *            entity manager factory
+	 * @param userTransaction
+	 *            user transaction
+	 * @param transactionManager
+	 *            transaction manager
+	 * @param synchronizationRegistry
+	 *            transaction synchronization registry
+	 */
+	public TransactionalCommandService(EntityManagerFactory emf,
+			UserTransaction userTransaction,
+			TransactionManager transactionManager,
+			TransactionSynchronizationRegistry synchronizationRegistry) {
+		this.emf = emf;
+		this.txm = new JtaTransactionManager(userTransaction,
+				synchronizationRegistry, transactionManager);
+	}	
 
     public Context getContext() {
         return context;
